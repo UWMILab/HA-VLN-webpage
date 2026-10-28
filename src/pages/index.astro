@@ -28,6 +28,7 @@ const DATA_URL = `${DOCS_HOME_URL}data/`;
 const PAPER_URL = "https://arxiv.org/pdf/2503.14229";
 const ARXIV_URL = "https://arxiv.org/abs/2503.14229";
 const REPO_URL = "https://github.com/F1y1113/HA-VLN";
+const LEADERBOARD_URL = "https://www.codabench.org/competitions/18135/#/results-tab";
 
 const frontmatter = {
   title: "HA-VLN: Human-Aware Vision-and-Language Navigation",
@@ -153,6 +154,10 @@ const authors = [
           <a class="button" href={REPO_URL} target="_blank" rel="noopener">
             <Icon name="ri:github-line" />
             <span>Repo</span>
+          </a>
+          <a class="button leaderboard" href={LEADERBOARD_URL} target="_blank" rel="noopener">
+            <Icon name="lucide:trophy" />
+            <span>Leaderboard</span>
           </a>
         </div>
         <div class="hero-meta" aria-label="Project links">
@@ -602,6 +607,17 @@ const authors = [
     color: #fff;
     background: var(--blue);
     border-color: var(--blue);
+  }
+
+  .button.leaderboard {
+    color: #fff;
+    background: var(--amber);
+    border-color: var(--amber);
+  }
+
+  .button.leaderboard:hover {
+    background: #92400e;
+    border-color: #92400e;
   }
 
   .button.dark {
