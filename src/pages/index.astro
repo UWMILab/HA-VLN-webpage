@@ -403,15 +403,21 @@ const authors = [
           {authors.map((author) => <span>{author}</span>)}
         </div>
         <div class="citation">
-          <pre><code>{`@misc{dong2026havln20openbenchmark,
-      title={HA-VLN 2.0: An Open Benchmark and Leaderboard for Human-Aware Navigation in Discrete and Continuous Environments with Dynamic Multi-Human Interactions}, 
-      author={Yifei Dong and Fengyi Wu and Qi He and Lingdong Kong and Heng Li and Minghan Li and Zebang Cheng and Yuxuan Zhou and Jingdong Sun and Qi Dai and Alexander G Hauptmann and Zhi-Qi Cheng},
-      year={2026},
-      eprint={2503.14229},
-      archivePrefix={arXiv},
-      primaryClass={cs.AI},
-      url={https://arxiv.org/abs/2503.14229}, 
+          <button class="citation-copy-btn" id="copy-bibtex-btn" type="button" aria-label="Copy BibTeX citation">
+            <Icon name="lucide:copy" class="copy-icon" />
+            <Icon name="lucide:check" class="check-icon" />
+            <span class="copy-text">Copy</span>
+          </button>
+          <pre><code id="bibtex-code">{`@inproceedings{dong2026havln,
+  title={{HA-VLN 2.0: An Open Benchmark and Leaderboard for Human-Aware Navigation in Discrete and Continuous Environments with Dynamic Multi-Human Interactions}},
+  author={Dong, Yifei and Wu, Fengyi and He, Qi and Kong, Lingdong and Li, Heng and Li, Minghan and Cheng, Zebang and Zhou, Yuxuan and Sun, Jingdong and Dai, Qi and Hauptmann, Alexander G. and Cheng, Zhi-Qi},
+  booktitle={IEEE/RSJ International Conference on Intelligent Robots and Systems},
+  year={2026},
+  url={https://arxiv.org/abs/2503.14229}
 }`}</code></pre>
+
+
+
         </div>
       </div>
     </section>
@@ -428,6 +434,42 @@ const authors = [
       <a href={REPO_URL} target="_blank" rel="noopener">Repo</a>
     </div>
   </footer>
+  <script>
+    const copyBtn = document.getElementById("copy-bibtex-btn");
+    if (copyBtn) {
+      copyBtn.addEventListener("click", async () => {
+        const codeEl = document.getElementById("bibtex-code");
+        const textToCopy = codeEl ? codeEl.innerText.trim() : "";
+        if (!textToCopy) return;
+
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(textToCopy);
+          } else {
+            const textarea = document.createElement("textarea");
+            textarea.value = textToCopy;
+            textarea.style.position = "fixed";
+            textarea.style.opacity = "0";
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+          }
+
+          copyBtn.classList.add("copied");
+          const textSpan = copyBtn.querySelector(".copy-text");
+          if (textSpan) textSpan.textContent = "Copied!";
+
+          setTimeout(() => {
+            copyBtn.classList.remove("copied");
+            if (textSpan) textSpan.textContent = "Copy";
+          }, 2000);
+        } catch (err) {
+          console.error("Failed to copy citation:", err);
+        }
+      });
+    }
+  </script>
 </Layout>
 
 <style>
@@ -1025,7 +1067,61 @@ const authors = [
   }
 
   .citation {
-    overflow: auto;
+    position: relative;
+    overflow: hidden;
+    background: #0f172a;
+  }
+
+  .citation-copy-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    background: rgba(30, 41, 59, 0.85);
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: all 160ms ease;
+    z-index: 5;
+  }
+
+  .citation-copy-btn:hover {
+    background: rgba(51, 65, 85, 0.95);
+    color: #f8fafc;
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .citation-copy-btn :global(svg) {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  .citation-copy-btn .check-icon {
+    display: none;
+    color: #10b981;
+  }
+
+  .citation-copy-btn.copied {
+    color: #10b981;
+    border-color: rgba(16, 185, 129, 0.4);
+    background: rgba(16, 185, 129, 0.12);
+  }
+
+  .citation-copy-btn.copied .copy-icon {
+    display: none;
+  }
+
+  .citation-copy-btn.copied .check-icon {
+    display: inline-block;
   }
 
   .citation pre {
@@ -1036,6 +1132,7 @@ const authors = [
     font-size: 13px;
     line-height: 1.65;
     white-space: pre-wrap;
+    overflow-x: auto;
   }
 
   .footer {
